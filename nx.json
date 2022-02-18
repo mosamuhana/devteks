@@ -1,0 +1,31 @@
+{
+  "extends": "@nrwl/workspace/presets/core.json",
+  "npmScope": "devteks",
+  "affected": {
+    "defaultBase": "main"
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "YzM1MDNhMWQtY2ZjYi00YzI4LThjZDYtNjZmNGJhOTJhNmNifHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "generators": {
+    "@nrwl/angular:application": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {}
+  },
+  "defaultProject": "ngx-svg-icon"
+}

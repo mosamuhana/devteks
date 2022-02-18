@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "projects": {
+    "ngx-svg-icon": "packages/ngx-svg-icon"
+  }
+}

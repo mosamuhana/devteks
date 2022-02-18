@@ -1,0 +1,42 @@
+{
+  "projectType": "library",
+  "root": "packages/ngx-svg-icon",
+  "sourceRoot": "packages/ngx-svg-icon/src",
+  "prefix": "devteks",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/packages/ngx-svg-icon"],
+      "options": {
+        "project": "packages/ngx-svg-icon/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "packages/ngx-svg-icon/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "packages/ngx-svg-icon/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/ngx-svg-icon"],
+      "options": {
+        "jestConfig": "packages/ngx-svg-icon/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/ngx-svg-icon/src/**/*.ts",
+          "packages/ngx-svg-icon/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": ["ui"]
+}
