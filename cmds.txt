@@ -1,5 +1,0 @@
-
-
-
-npx nx generate @nrwl/angular:library --name=ngx-qrcode --importPath=@devteks/ngx-qrcode --publishable --standaloneConfig --tags=ui --no-interactive --dry-run
-npx nx generate @nrwl/angular:library --name=ngx-svg-icon --importPath=@devteks/ngx-svg-icon --publishable --standaloneConfig --tags=ui --no-interactive --dry-run

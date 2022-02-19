@@ -20,8 +20,7 @@
     "test": "nx test",
     "build:libs": "ts-node ./tools/scripts/build.ts",
     "publish:ngx-qrcode": "cd ./dist/libs/ngx-qrcode && npm publish --access public",
-    "publish:ngx-svg-icon": "cd ./dist/libs/ngx-svg-icon && npm publish --access public",
-    "git:commit": "ts-node ./tools/scripts/commit.ts"
+    "publish:ngx-svg-icon": "cd ./dist/libs/ngx-svg-icon && npm publish --access public"
   },
   "dependencies": {
     "@angular/animations": "~13.2.3",
