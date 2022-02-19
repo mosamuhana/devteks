@@ -1,8 +1,4 @@
-import { set } from 'shelljs';
-
 import { Builder } from './builder';
-
-set('-e');
 
 export function build() {
   const builder = new Builder();

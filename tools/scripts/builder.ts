@@ -1,13 +1,12 @@
-import { exec } from 'shelljs';
 import { green, red, bold } from "colorette"
 
 import {
-  isBuildSuccess,
   getAllLibNames,
   readJsonFileSync,
   writeJsonFileSync,
   getPath,
   removeDir,
+  execBuildLib,
 } from './utils';
 
 export class Builder {
@@ -63,7 +62,7 @@ export class Builder {
     for (const name of this.names) {
       const info = this.data[name];
       writeJsonFileSync(info.path, info.newPackage);
-      const ok = this._buildLib(name);
+      const ok = execBuildLib(name);
       if (ok) {
         n++;
         console.log(bold(green('SUCCESS:')), green(`${name} build success.`));
@@ -73,14 +72,6 @@ export class Builder {
       }
     }
     return n === this.names.length;
-  }
-
-  private _buildLib(name: string) {
-    let result: string = '';
-    try {
-      result = exec(`npx nx build ${name}`, { silent: true }).stdout;
-    } catch (ex) {}
-    return isBuildSuccess(result, name);
   }
 }
 
