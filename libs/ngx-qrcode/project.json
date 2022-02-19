@@ -1,0 +1,42 @@
+{
+  "projectType": "library",
+  "root": "libs/ngx-qrcode",
+  "sourceRoot": "libs/ngx-qrcode/src",
+  "prefix": "devteks",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/ngx-qrcode"],
+      "options": {
+        "project": "libs/ngx-qrcode/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ngx-qrcode/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/ngx-qrcode/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ngx-qrcode"],
+      "options": {
+        "jestConfig": "libs/ngx-qrcode/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ngx-qrcode/src/**/*.ts",
+          "libs/ngx-qrcode/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": ["ui"]
+}

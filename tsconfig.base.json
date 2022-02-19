@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@devteks/ngx-svg-icon": ["packages/ngx-svg-icon/src/index.ts"]
+      "@devteks/ngx-qrcode": ["libs/ngx-qrcode/src/index.ts"],
+      "@devteks/ngx-svg-icon": ["libs/ngx-svg-icon/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,6 +1,9 @@
 {
   "version": 2,
   "projects": {
-    "ngx-svg-icon": "packages/ngx-svg-icon"
+    "ngx-qrcode": "libs/ngx-qrcode",
+    "ngx-svg-icon": "libs/ngx-svg-icon",
+    "samples": "apps/samples",
+    "samples-e2e": "apps/samples-e2e"
   }
 }

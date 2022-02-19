@@ -1,0 +1,23 @@
+{
+  "name": "@devteks/ngx-svg-icon",
+  "version": "0.0.3",
+  "description": "Angular component library for SVG icons",
+  "license": "MIT",
+  "author": {
+    "name": "Mosa Muhana <mosamuhana@gmail.com>",
+    "url": "https://github.com/mosamuhana"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mosamuhana/devteks.git"
+  },
+  "homepage": "https://github.com/mosamuhana/devteks/libs/ngx-svg-icon",
+  "peerDependencies": {
+    "@angular/common": ">=13.0.0",
+    "@angular/core": ">=13.0.0",
+    "rxjs": ">=7.0.0"
+  },
+  "dependencies": {
+    "tslib": ">=2.0.0"
+  }
+}

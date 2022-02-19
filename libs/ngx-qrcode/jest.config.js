@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'ngx-svg-icon',
+  displayName: 'ngx-qrcode',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +8,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/packages/ngx-svg-icon',
+  coverageDirectory: '../../coverage/libs/ngx-qrcode',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

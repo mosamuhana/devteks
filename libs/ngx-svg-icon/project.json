@@ -1,30 +1,30 @@
 {
   "projectType": "library",
-  "root": "packages/ngx-svg-icon",
-  "sourceRoot": "packages/ngx-svg-icon/src",
+  "root": "libs/ngx-svg-icon",
+  "sourceRoot": "libs/ngx-svg-icon/src",
   "prefix": "devteks",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:package",
-      "outputs": ["dist/packages/ngx-svg-icon"],
+      "outputs": ["dist/libs/ngx-svg-icon"],
       "options": {
-        "project": "packages/ngx-svg-icon/ng-package.json"
+        "project": "libs/ngx-svg-icon/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "packages/ngx-svg-icon/tsconfig.lib.prod.json"
+          "tsConfig": "libs/ngx-svg-icon/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "packages/ngx-svg-icon/tsconfig.lib.json"
+          "tsConfig": "libs/ngx-svg-icon/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/ngx-svg-icon"],
+      "outputs": ["coverage/libs/ngx-svg-icon"],
       "options": {
-        "jestConfig": "packages/ngx-svg-icon/jest.config.js",
+        "jestConfig": "libs/ngx-svg-icon/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -32,8 +32,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "packages/ngx-svg-icon/src/**/*.ts",
-          "packages/ngx-svg-icon/src/**/*.html"
+          "libs/ngx-svg-icon/src/**/*.ts",
+          "libs/ngx-svg-icon/src/**/*.html"
         ]
       }
     }
