@@ -1,0 +1,33 @@
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .list {
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    a {
+      display: block;
+      width: 200px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      user-select: none;
+      background-color: #ccc;
+      color: blue;
+      font-size: 1.5rem;
+      box-shadow: 0 0 5px 2px rgb(0, 0, 0, 0.2);
+
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+  }
+}

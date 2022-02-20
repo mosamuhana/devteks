@@ -5,10 +5,6 @@ import { createRetryHtml, checkNumberProperty, createLoadingHtml, getConfig } fr
 import { renderQrcode, loadScript } from './qrcode';
 import { QRCodeCorrectionLevel, QRCodeType, RGBAColor, QRCodeConfig, QRCODE_CONFIG_TOKEN } from './types';
 
-const DEFAULT_MARGIN = 4;
-const DEFAULT_SCALE = 4;
-const DEFAULT_WIDTH = 10;
-
 @Component({
 	selector: 'ngx-qrcode',
 	changeDetection: ChangeDetectionStrategy.OnPush,

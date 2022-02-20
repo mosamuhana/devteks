@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  nav {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    background-color: #ccc;
+    padding: 5px 10px;
+
+    a {
+      display: block;
+      padding: 5px 10px;
+      text-decoration: none;
+      color: #000;
+
+      &:hover {
+        background-color: #eee;
+      }
+    }
+  }
+
+  main {
+    //flex: 1 1 0%;
+    flex-grow: 1;
+  }
+}

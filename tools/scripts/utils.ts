@@ -11,7 +11,8 @@ export const execBuildLib = (name: string) => {
   try {
     result = exec(`npx nx build ${name}`, { silent: true }).stdout ?? '';
   } catch (ex) {}
-  return result.includes(`Successfully ran target build for project  ${name}`);
+  //return result.includes(`Successfully ran target build for project  ${name}`);
+  return result.includes('Successfully ran target');
 }
 
 export const getAllLibNames = () => {

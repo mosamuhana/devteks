@@ -14,3 +14,10 @@ function uniqueStringArray(arr: string[]) {
 	for (const x of arr) map[x] = true;
 	return Object.keys(map);
 }
+
+
+export const createSvgElement = (data: string, doc: Document): SVGElement => {
+  const div = doc.createElement('DIV');
+  div.innerHTML = data;
+  return div.querySelector('svg') as SVGElement;
+}

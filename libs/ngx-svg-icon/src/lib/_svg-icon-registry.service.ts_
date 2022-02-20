@@ -1,0 +1,78 @@
+import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, finalize, map, share, tap } from 'rxjs/operators';
+
+export const SERVER_URL = new InjectionToken<string>('SERVER_URL');
+
+@Injectable({ providedIn: 'root' })
+export class SvgIconRegistryService {
+	private _iconsMap = new Map<string, SVGElement>();
+	private _iconsLoadingMap = new Map<string, Observable<SVGElement>>();
+
+	constructor(
+    private _http: HttpClient,
+		//@Optional()
+    @Inject(DOCUMENT) private _doc: Document,
+		//@Inject(PLATFORM_ID) private platformId: Object,
+	) {}
+
+	/** Add a SVG to the registry by passing a name and the SVG. */
+	public addSvg(name: string, data: string) {
+		if (!this._iconsMap.has(name)) {
+			this._iconsMap.set(name, _createSvgElement(this._doc, data));
+		}
+	}
+
+	/** Load a SVG to the registry from a URL. */
+	public loadSvg(url: string, name: string = url): Observable<SVGElement | undefined> | undefined {
+		if (this._iconsMap.has(name)) {
+			return of(this._iconsMap.get(name));
+		} else if (this._iconsLoadingMap.has(name)) {
+			return this._iconsLoadingMap.get(name);
+		}
+
+		//const svgObservable = this.loader.getSvg(url).pipe(
+		const svgObservable = this._getSvg(url).pipe(
+			map(svgString => _createSvgElement(this._doc, svgString)),
+			tap(svg => this._iconsMap.set(name, svg)),
+			catchError((err) => {
+				console.error(err);
+				return throwError(() => err);
+			}),
+			finalize(() => this._iconsLoadingMap.delete(name)),
+			share(),
+		);
+
+		this._iconsLoadingMap.set(name, svgObservable);
+		return svgObservable;
+	}
+
+	/** Get loaded SVG from registry by name. (also works by url because of blended map) */
+	public getSvgByName(name: string): Observable<SVGElement | undefined> | undefined {
+		if (this._iconsMap.has(name)) {
+			return of(this._iconsMap.get(name));
+		} else if (this._iconsLoadingMap.has(name)) {
+			return this._iconsLoadingMap.get(name);
+		}
+		return throwError(() => `No svg with name '${name}' has been loaded`);
+	}
+
+	/** Remove a SVG from the registry by URL (or name). */
+	public unloadSvg(url: string) {
+		if (this._iconsMap.has(url)) {
+			this._iconsMap.delete(url);
+		}
+	}
+
+  private _getSvg(url: string): Observable<string> {
+		return this._http.get(url, { responseType: 'text' });
+	}
+}
+
+const	_createSvgElement = (doc: Document, data: string): SVGElement => {
+  const div = doc.createElement('DIV');
+  div.innerHTML = data;
+  return div.querySelector('svg') as SVGElement;
+}

@@ -55,10 +55,9 @@ export const renderQrcode = async (
 };
 
 export const loadScript = (renderer: Renderer2, doc: Document, url: string) => {
-  if (isQrcodeLibLoaded()) return Promise.resolve(true);
-
-  const scriptEl = doc.querySelector(`#${QRCODE_SCRIPT_ID}`);
-  if (scriptEl != null) return Promise.resolve(true);
+  //if (isQrcodeLibLoaded()) return Promise.resolve(true);
+  //const scriptEl = doc.querySelector(`#${QRCODE_SCRIPT_ID}`);
+  //if (scriptEl != null) return Promise.resolve(true);
 
   if (_scriptPromise == null) {
     _scriptPromise = new Promise<boolean>(resolve => {
@@ -67,7 +66,10 @@ export const loadScript = (renderer: Renderer2, doc: Document, url: string) => {
       el.src = url;
       el.id = QRCODE_SCRIPT_ID;
       el.onload = () => resolve(true);
-      el.onerror = () => { el.remove(); resolve(false); };
+      el.onerror = () => {
+        el.remove();
+        resolve(false);
+      };
       renderer.appendChild(doc.body, el);
     });
   }
@@ -80,7 +82,7 @@ export const loadScript = (renderer: Renderer2, doc: Document, url: string) => {
   });
 };
 
-const isQrcodeLibLoaded = () => typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function';
+//const isQrcodeLibLoaded = () => typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function';
 
 const _renderDataURL = (data: string, options: any) => {
   return new Promise<string>((resolve, reject) => {

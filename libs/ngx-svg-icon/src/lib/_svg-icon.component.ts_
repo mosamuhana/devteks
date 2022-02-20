@@ -38,28 +38,24 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	@Input()
 	set svgStyle(values: { [key: string]: any } | null) {
 		this._svgStyle = values;
-		if (!this._differ && values) {
-			this._differ = this._differs.find(values).create();
+		if (!this._helper.differ && values) {
+			this._helper.differ = this._differs.find(values).create();
 		}
 	}
 
   private _subscription?: Subscription;
-  private _loaded = false;
-  private _differ?: KeyValueDiffer<string, string | number>;
+	private _helper = new SvgIconHelper();
 	private _svgStyle: { [key: string]: any } | null = null;
-	private _element!: HTMLElement;
-	private get _svg() { return this._element.firstChild as SVGElement; }
+	private get _element() { return this._elRef.nativeElement; }
 
 	constructor(
-		private _registry: SvgIconRegistryService,
-    private _differs: KeyValueDiffers,
+		private _elRef: ElementRef<HTMLElement>,
+		private _differs: KeyValueDiffers,
 		private _renderer: Renderer2,
+		private _iconReg: SvgIconRegistryService,
 		private _cdr: ChangeDetectorRef,
 		@Inject(DOCUMENT) private _doc: Document,
-		elRef: ElementRef<HTMLElement>,
-	) {
-    this._element = elRef.nativeElement;
-  }
+	) {}
 
 	ngOnInit() {
 		this._init();
@@ -70,17 +66,17 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	}
 
 	ngOnChanges(changeRecord: SimpleChanges) {
-		const svg = this._svg;
+		const svg = this._element.firstChild as SVGElement;
 
 		if (changeRecord['src'] || changeRecord['name']) {
-			if (this._loaded) {
+			if (this._helper.loaded) {
 				this._destroy();
 			}
 			this._init();
 		}
 
 		if (changeRecord['stretch']) {
-			this._preserveAspectRatio();
+			this._stylize();
 		}
 
 		if (changeRecord['applyClass']) {
@@ -108,7 +104,7 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 
 		const viewBoxChange = changeRecord['viewBox'];
 		if (viewBoxChange) {
-			if (this._loaded) {
+			if (this._helper.loaded) {
 				this._destroy();
 			}
 			this._init();
@@ -121,8 +117,8 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	}
 
 	ngDoCheck() {
-		if (this._svg && this._differ) {
-			const changes = this._differ.diff(this._svgStyle!);
+		if (this._helper.svg && this._helper.differ) {
+			const changes = this._helper.differ.diff(this._svgStyle!);
 			if (changes) {
 				changes.forEachRemovedItem(record => this._setStyle(record.key, null));
 				changes.forEachAddedItem(record => this._setStyle(record.key, record.currentValue));
@@ -133,12 +129,12 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 
 	private _init() {
 		if (this.name) {
-			const svgObservable = this._registry.getSvgByName(this.name);
+			const svgObservable = this._iconReg.getSvgByName(this.name);
 			if (svgObservable) {
 				this._subscription = svgObservable.subscribe(svg => this._initSvg(svg));
 			}
 		} else if (this.src) {
-			const svgObservable = this._registry.loadSvg(this.src);
+			const svgObservable = this._iconReg.loadSvg(this.src);
 			if (svgObservable) {
 				this._subscription = svgObservable.subscribe(svg => this._initSvg(svg));
 			}
@@ -149,18 +145,19 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	}
 
 	private _initSvg(svg: SVGElement | undefined): void {
-		if (this._loaded || !svg) return;
+		if (this._helper.loaded || !svg) return;
 
-		//this._svg = svg;
+		this._helper.svg = svg;
 		svg = svg.cloneNode(true) as SVGElement;
+		const el = this._element;
 
-		this._element.innerHTML = '';
-		this._renderer.appendChild(this._element, svg);
-		this._loaded = true;
+		el.innerHTML = '';
+		this._renderer.appendChild(el, svg);
+		this._helper.loaded = true;
 
 		this._initTitle(svg);
 
-		const attributes = this._element.attributes as NamedNodeMap;
+		const attributes = el.attributes as NamedNodeMap;
 		const len = attributes.length;
 		for (let i = 0; i < len; i++) {
 			const attr = attributes.item(i);
@@ -180,7 +177,7 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 
     this._initViewBox();
 
-		this._preserveAspectRatio();
+		this._stylize();
 
 		// If there is not a svgAriaLabel and the SVG has an arial-label, then do not override
 		// the SVG's aria-label.
@@ -190,16 +187,14 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 
 		this._cdr.markForCheck();
 
-		if (this._svgStyle && !this._differ) {
-			this._differ = this._differs.find(this._svgStyle).create();
+		if (this._svgStyle && !this._helper.differ) {
+			this._helper.differ = this._differs.find(this._svgStyle).create();
 		}
 	}
 
 	private _destroy() {
     this._subscription?.unsubscribe();
-    this._subscription = undefined;
-    this._loaded = false;
-    //this._svg = undefined;
+		this._helper = new SvgIconHelper();
 	}
 
 	private _setNgContentAttribute(parent: Node, attributeName: string) {
@@ -213,21 +208,24 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 		}
 	}
 
-	private _preserveAspectRatio() {
+	private _stylize() {
+		if (!this._helper.svg) return;
+		const svg = this._element.firstChild;
 		if (this.stretch === true) {
-			this._renderer.setAttribute(this._svg, 'preserveAspectRatio', 'none');
+			this._renderer.setAttribute(svg, 'preserveAspectRatio', 'none');
 		} else if (this.stretch === false) {
-			this._renderer.removeAttribute(this._svg, 'preserveAspectRatio');
+			this._renderer.removeAttribute(svg, 'preserveAspectRatio');
 		}
 	}
 
 	private _setStyle(nameAndUnit: string, value: string | number | null | undefined) {
 		const [name, unit] = nameAndUnit.split('.');
 		value = value != null && !!unit ? `${value}${unit}` : value;
+		const svg = this._element.firstChild;
 		if (value != null) {
-			this._renderer.setStyle(this._svg, name, value as string);
+			this._renderer.setStyle(svg, name, value as string);
 		} else {
-			this._renderer.removeStyle(this._svg, name);
+			this._renderer.removeStyle(svg, name);
 		}
 	}
 
@@ -244,7 +242,7 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	}
 
 	private _setAriaLabel(label?: string) {
-    const svg = this._svg;
+		const svg = this._element.firstChild;
 		if (!svg) return;
 		if (!label || label === '') {
 			this._renderer.setAttribute(svg, 'aria-hidden', 'true');
@@ -263,8 +261,8 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
 	}
 
 	private _initViewBox() {
-    const svg = this._svg;
-    if (!this.viewBox || !svg) return;
+    if (!this.viewBox) return;
+    const svg = this._helper.svg;
     if (this.viewBox === 'auto') {
       // Attempt to convert height & width to a viewBox.
       const w = svg.getAttribute('width');
@@ -280,4 +278,10 @@ export class SvgIconComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
       this._renderer.removeAttribute(svg, 'height');
     }
   }
+}
+
+class SvgIconHelper {
+	svg!: SVGElement;
+	differ?: KeyValueDiffer<string, string | number>;
+	loaded = false;
 }
