@@ -43,7 +43,7 @@ export class Builder {
       const oldPackage = readJsonFileSync(path);
       oldPackage.author = mainPkg.author;
       oldPackage.repository = mainPkg.repository;
-      oldPackage.homepage = `${mainPkg.homepage}/libs/${name}`;
+      oldPackage.homepage = `${mainPkg.homepage}/tree/main/libs/${name}`;
       const newPackage = {...oldPackage};
       newPackage.version = mainPkg.version;
       this.data[name] = { name, path, oldPackage, newPackage };
