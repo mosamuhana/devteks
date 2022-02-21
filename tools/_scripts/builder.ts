@@ -7,26 +7,18 @@ import {
   getPath,
   removeDir,
   execBuildLib,
+  getNpmPkgVersion,
 } from './utils';
 
 export class Builder {
-  main: PackageInfo;
-  names: string[] = getAllLibNames();
+  main!: PackageInfo;
   data: Record<string, PackageInfo> = {};
 
-  constructor() {
-    const mainPath = getPath('package.json');
-    const mainPackage = readJsonFileSync(mainPath);
-    this.main = {
-      name: 'main',
-      path: mainPath,
-      oldPackage: mainPackage,
-      newPackage: {...mainPackage},
-    };
-    this._init();
-  }
+  get names() { return Object.keys(this.data); }
 
   public build() {
+    if (!this.main) this._init();
+
     removeDir(getPath('dist'));
     const ok = this._buildAll();
     if (!ok) {
@@ -36,9 +28,12 @@ export class Builder {
   }
 
   private _init() {
-    const mainPkg = this.main.oldPackage;
-    this.names = getAllLibNames();
-    for (const name of this.names) {
+    const mainPath = getPath('package.json');
+    const mainPackage = readJsonFileSync(mainPath);
+
+    const mainPkg = mainPackage;
+    const names = getAllLibNames();
+    for (const name of names) {
       const path = getPath('libs', name, 'package.json');
       const oldPackage = readJsonFileSync(path);
       oldPackage.author = mainPkg.author;
@@ -48,18 +43,27 @@ export class Builder {
       newPackage.version = mainPkg.version;
       this.data[name] = { name, path, oldPackage, newPackage };
     }
+
+    this.main = {
+      name: 'main',
+      path: mainPath,
+      oldPackage: mainPackage,
+      newPackage: {...mainPackage},
+    };
   }
 
   private _rollback() {
-    for (const name of this.names) {
+    const names = this.names;
+    for (const name of names) {
       const info = this.data[name];
       writeJsonFileSync(info.path, info.oldPackage);
     }
   }
 
   private _buildAll() {
+    const names = this.names;
     let n = 0;
-    for (const name of this.names) {
+    for (const name of names) {
       const info = this.data[name];
       writeJsonFileSync(info.path, info.newPackage);
       const ok = execBuildLib(name);
@@ -71,7 +75,11 @@ export class Builder {
         break;
       }
     }
-    return n === this.names.length;
+    return n === names.length;
+  }
+
+  private _getVersions() {
+    const pkgNames = this.names.map(k => this.data[k].name as string);
   }
 }
 

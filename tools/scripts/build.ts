@@ -1,14 +1,10 @@
-import { Builder } from './builder';
+import { Builder } from './common/builder';
 
-export function build() {
+export async function build() {
   const builder = new Builder();
-  builder.build();
-}
-
-function run() {
-  build();
+  await builder.build();
 }
 
 if (require.main == module) {
-  run();
+  build();
 }

@@ -1,16 +1,21 @@
 import { join } from 'path';
 import { readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
 import { exec, rm } from 'shelljs';
+import { inc } from 'semver';
 
 const ROOT_PATH = join(__dirname, '../../');
 
 export const getPath = (...args: string[]) => args.length ? join(ROOT_PATH, ...args) : ROOT_PATH;
 
-export const execBuildLib = (name: string) => {
-  let result: string = '';
+const execCommand = (cmd: string) => {
   try {
-    result = exec(`npx nx build ${name}`, { silent: true }).stdout ?? '';
+    return exec(cmd, { silent: true }).stdout ?? '';
   } catch (ex) {}
+  return undefined;
+}
+
+export const execBuildLib = (name: string) => {
+  const result = execCommand(`npx nx build ${name}`) ?? '';
   //return result.includes(`Successfully ran target build for project  ${name}`);
   return result.includes('Successfully ran target');
 }
@@ -30,4 +35,9 @@ export const removeDir = (dir: string) => {
     return true;
   } catch (ex) {}
   return false;
+};
+
+export const getNpmPkgVersion = (pkg: string) => {
+  return (execCommand(`npm view ${pkg} version`) ?? '')
+    .trim().replace(/^\n*|\n*$/g, '');
 };

@@ -1,6 +1,6 @@
 {
   "name": "@devteks/ngx-qrcode",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Angular component library to generate QR codes",
   "license": "MIT",
   "author": {
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/mosamuhana/devteks.git"
   },
-  "homepage": "https://github.com/mosamuhana/devteks/libs/ngx-qrcode",
+  "homepage": "https://github.com/mosamuhana/devteks/tree/main/libs/ngx-qrcode",
   "peerDependencies": {
     "@angular/common": ">=13.0.0",
     "@angular/core": ">=13.0.0"
